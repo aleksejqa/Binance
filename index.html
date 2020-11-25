@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bitcoin Trading Bot</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Dynamic HASHTAPP Control Panel</h1>
+    <form>
+      Detonation strength:
+      <input type="number" id="amount" name="amount" value="0.001" /><br />
+    </form>
+    <button onclick="initalizeDHASHTAPP()">init DHASHTAPP</button>
+    <button onclick="startOperation()">start operating</button>
+    <button onclick="stopOperation()">stop operating</button>
+    <button
+      onclick="placeOrder('BTCUSDT', 'BUY', 'STOP_MARKET', 0.001, false, 1, 10600)"
+    >
+      place test order
+    </button>
+    <button onclick="cancelOrder('BTCUSDT', 1)">delete test order</button>
+    <br />
+    <table id="tbl_protocol">
+      <tr>
+        <th>Timestamp</th>
+        <th>Response</th>
+      </tr>
+    </table>
+
+    <script>
+      const initalizeDHASHTAPP = () => {
+        amount = parseFloat(document.getElementById('amount').value);
+        console.log(amount);
+        var data = { amount };
+        // data.title = 'title';
+        // data.message = 'message';
+
+        $.ajax({
+          type: 'GET',
+          data: data,
+          url: 'http://localhost:5000/initialize',
+          success: function() {
+            console.log('success');
+            // console.log(JSON.stringify(data));
+          }
+        });
+      };
+      const startOperation = () => {
+        $.ajax({
+          type: 'GET',
+          //   data: data,
+          url: 'http://localhost:5000/start',
+          success: function(msg) {
+            console.log('success');
+            protocolAction(JSON.parse(data)['msg']);
+          }
+        });
+      };
+
+      const stopOperation = () => {
+        $.ajax({
+          type: 'GET',
+          //   data: data,
+          url: 'http://localhost:5000/stop',
+          success: function(msg) {
+            console.log('success');
+            protocolAction(JSON.parse(data)['msg']);
+          }
+        });
+      };
+
+      const cancelOrder = (symbol, origClientOrderId) => {
+        var data = {
+          symbol,
+          origClientOrderId
+        };
+
+        $.ajax({
+          type: 'GET',
+          data: data,
+          url: 'http://localhost:5000/cancel',
+          success: function() {
+            console.log('success');
+          }
+        });
+      };
+
+      const placeOrder = (
+        symbol,
+        side,
+        type,
+        quantity,
+        reduceOnly,
+        newClientOrderId,
+        stopPrice
+      ) => {
+        var data = {
+          symbol: symbol,
+          side: side,
+          type: type,
+          quantity: quantity,
+          reduceOnly: reduceOnly,
+          newClientOrderId: newClientOrderId,
+          stopPrice: stopPrice
+        };
+
+        $.ajax({
+          type: 'GET',
+          data: data,
+          url: 'http://localhost:5000/order',
+          success: function() {
+            console.log('success');
+          }
+        });
+      };
+    </script>
+  </body>
+</html>
